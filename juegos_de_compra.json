@@ -1,0 +1,86 @@
+[
+    {
+        "idProducto": "1",
+        "nombre": "Hero Quest",
+        "precio": "200",
+        "descripcion": "",
+        "stock": "100"
+    },
+    {
+        "idProducto": "2",
+        "nombre": "Ajedrez",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "35"
+    },
+    {
+        "idProducto": "3",
+        "nombre": "Risk",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "4",
+        "nombre": "Cluedo",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "5",
+        "nombre": "Damas",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "10"
+    },
+    {
+        "idProducto": "6",
+        "nombre": "Tres en Raya",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "7",
+        "nombre": "Parchis",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "8",
+        "nombre": "Oca",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "9",
+        "nombre": "Picctionary",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "3"
+    },
+    {
+        "idProducto": "10",
+        "nombre": "Scrabble",
+        "precio": "20",
+        "descripcion": "juego de mesa",
+        "stock": "7"
+    },
+    {
+        "idProducto": "11",
+        "nombre": "Leyenda de Zagore",
+        "precio": "25",
+        "descripcion": "Juego de mesa",
+        "stock": "30"
+    },
+    {
+        "idProducto": "15",
+        "nombre": "scaletrix",
+        "precio": "100",
+        "descripcion": "Juego electrico",
+        "stock": "10"
+    }
+]
