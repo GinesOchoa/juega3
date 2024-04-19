@@ -1,0 +1,18 @@
+[
+    {
+        "username": "admin",
+        "password": "admin123",
+        "admin": true
+    },
+    {
+        "username": "cliente1",
+        "password": "clave123",
+        "admin": false
+    },
+    {
+        "username": "cliente2",
+        "password": "otraclave",
+        "admin": false
+    }
+]
+

@@ -1,0 +1,21 @@
+<div class="basket">
+    {{ message }}
+    <br/>
+    {% for item in basket %}
+        {% include 'partials/basket_item.html' %}
+    {% endfor %}
+    {% if basket|length > 0 %}
+        {% include 'partials/total_cost.html' %}
+        {% include 'partials/discount_codes.html' %}
+        {% include 'partials/clear_basket.html' %}
+        {% include 'partials/checkout.html' %}
+    {% endif %}
+</div>
+
+<style>
+    .basket {
+        width: 95%;
+        height: 95%;
+        background-color: #cccccc;
+    }
+</style>

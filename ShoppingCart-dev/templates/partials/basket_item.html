@@ -1,0 +1,22 @@
+<form id="delete" action="/delete" method="post">
+    <br/>
+    <div>{{ item[1].attributes.name }}</div>
+    <div>{{ item[1].attributes.cost }}</div>
+    <br/>
+    <input type="hidden" name="index" value="{{ item[0] }}"/>
+    <div class="bin d-flex flex-row">
+        <input id="button" type="button" onclick="warning('delete')" value="&#128465;" />
+        <span class="delete">Remove item from basket</span>
+    </div>
+</form>
+
+<script src="../../static/scripts/warning.js"></script>
+
+<style>
+    .delete {
+        display: none;
+    }
+    .bin:hover .delete {
+        display: block;
+    }
+</style>
