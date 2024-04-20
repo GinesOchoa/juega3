@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuarios</title>
+</head>
+<body>
+    <h1>Bienvenido al Panel de Usuarios</h1>
+    <p>Aquí puedes realizar acciones como usuario.</p>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+
+    <script>
+        function cerrarSesion() {
+            fetch('/logout')
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensaje);  
+                window.location.href = '/';  
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

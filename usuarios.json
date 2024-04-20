@@ -1,18 +1,77 @@
-[
-    {
+{
+    "usuarios": [
+      {
+        "id": 1,
         "username": "admin",
         "password": "admin123",
-        "admin": true
-    },
-    {
+        "nombre": "Admin",
+        "apellidos": "Admin",
+        "email": "admin@example.com",
+        "telefono": "123456789",
+        "admin": true,
+        "premium": false
+      },
+      {
+        "id": 2,
         "username": "cliente1",
         "password": "clave123",
-        "admin": false
-    },
-    {
+        "nombre": "Juan",
+        "apellidos": "González",
+        "email": "cliente1@example.com",
+        "telefono": "987654321",
+        "admin": false,
+        "premium": false,
+        "tipo": "Fisico"
+      },
+      {
+        "id": 3,
         "username": "cliente2",
         "password": "otraclave",
-        "admin": false
-    }
-]
+        "nombre": "María",
+        "apellidos": "López",
+        "email": "cliente2@example.com",
+        "telefono": "567890123",
+        "admin": false,
+        "premium": true,
+        "tipo": "Online",
+        "direccion_envio": "Calle Principal 123",
+        "provincia": "Madrid",
+        "localidad": "Madrid",
+        "nacionalidad": "Española",
+        "codigo_postal": "28001"
+      },
+      {
+        "id": 4,
+        "username": "cliente3",
+        "password": "otraclave123",
+        "nombre": "Pedro",
+        "apellidos": "Martínez",
+        "email": "cliente3@example.com",
+        "telefono": "111222333",
+        "admin": false,
+        "premium": true,
+        "tipo": "Fisico",
+        "gasto_mensual": 1500
+      },
+      {
+        "id": 5,
+        "username": "cliente4",
+        "password": "otraclave456",
+        "nombre": "Ana",
+        "apellidos": "Sánchez",
+        "email": "cliente4@example.com",
+        "telefono": "444555666",
+        "admin": false,
+        "premium": true,
+        "tipo": "Online",
+        "direccion_envio": "Avenida Central 456",
+        "provincia": "Barcelona",
+        "localidad": "Barcelona",
+        "nacionalidad": "Española",
+        "codigo_postal": "08001",
+        "gasto_mensual": 2500
+      }
+    ]
+  }
+  
 

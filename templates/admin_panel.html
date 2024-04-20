@@ -7,7 +7,161 @@
 </head>
 <body>
     <h1>Bienvenido al Panel de Administrador</h1>
-    <p>Aquí puedes realizar acciones de administración.</p>
-    <a href="/logout">Cerrar sesión</a>
+    <h1>CRUD de Productos</h1>
+        <form id="productoForm">
+        <label for="idProducto">ID Producto:</label><br>
+        <input type="number" id="idProducto" name="idProducto"><br>
+        <label for="nombre">Nombre:</label><br>
+        <input type="text" id="nombre" name="nombre"><br>
+        <label for="precio">Precio:</label><br>
+        <input type="number" id="precio" name="precio" step="0.01"><br>
+        <label for="descripcion">Descripción:</label><br>
+        <input type="text" id="descripcion" name="descripcion"><br>
+        <label for="stock">Stock:</label><br>
+        <input type="number" id="stock" name="stock"><br><br>
+        <button type="button" onclick="agregarProducto()">Agregar Producto</button>
+        <button type="button" onclick="listarProductos()">Listar Productos</button>
+        <button type="button" onclick="actualizarProducto()">Actualizar Producto</button>
+        <button type="button" onclick="eliminarProducto()">Eliminar Producto</button>
+        <button type="button" onclick="limpiarCampos()">Limpiar Campos</button>
+        </form>
+
+            <div id="resultado"></div>
+
+    <script>
+
+        function limpiarCampos() {
+            document.getElementById('productoForm').reset();
+            document.getElementById('resultado').innerHTML = ''; 
+        }
+        
+        function agregarProducto() {
+            var formData = {
+                idProducto: document.getElementById('idProducto').value,
+                nombre: document.getElementById('nombre').value,
+                precio: document.getElementById('precio').value,
+                descripcion: document.getElementById('descripcion').value,
+                stock: document.getElementById('stock').value
+            };
+
+            fetch('/productos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensaje);
+                document.getElementById('productoForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function listarProductos() {
+            fetch('/productos')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultado').innerHTML = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function buscarProducto() {
+        var formData = {
+            nombreProducto: document.getElementById('nombreProducto').value
+        };
+
+        fetch('/productos', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+             document.getElementById('resultado').innerHTML = JSON.stringify(data, null, 2);
+            } else {
+                alert('Producto no encontrado.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        }
+
+
+        function actualizarProducto() {
+        var formData = {
+        idProducto: document.getElementById('idProducto').value, 
+        nombre: document.getElementById('nombre').value,
+        precio: document.getElementById('precio').value,
+        descripcion: document.getElementById('descripcion').value,
+        stock: document.getElementById('stock').value
+        };
+
+        fetch('/productos', { 
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.mensaje);
+            document.getElementById('productoForm').reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+            }
+
+        function eliminarProducto() {
+        var formData = {
+            idProducto: document.getElementById('idProducto').value
+        };
+
+        fetch('/productos', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.mensaje);
+            document.getElementById('productoForm').reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        }
+    </script>
+
+<button onclick="cerrarSesion()">Cerrar sesión</button>
+
+<script>
+    function cerrarSesion() {
+        fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.mensaje);  
+            window.location.href = '/';  
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+    
 </body>
 </html>
