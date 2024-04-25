@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Shopping application</title>
     <meta name="description" content="Shopping application">
-    <meta name="author" content="Jenny Potts">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="static/styles/main.css">
 </head>
@@ -13,20 +12,15 @@
 <header>
     {% include 'partials/header.html' %}
 </header>
-<main class="m-auto pt-5">
-    {{ item }}
-    <div class="row m-auto">
-        <div class="col-8 d-flex flex-row flex-wrap">
-            {% for item in items %}
-                {% include 'partials/item.html' %}
-            {% endfor %}
-        </div>
-        <div class="col-4">
-            {% include 'partials/basket.html' %}
-        </div>
-    </div>
-</main>
-<footer>
-</footer>
+<div class="d-flex align-items-center flex-column">
+    <p>Tu compra:</p>
+    {% for item in carrito %}
+        <div>{{ item[1].nombre}}</div>
+        <div>{{ item[1].precio }} Euros</div>
+        <br/>
+    {% endfor %}
+    <p>{% include 'partials/total_cost.html' %}</p>
+    <button><a href="/carrito">Continuar comprando</a></button>
+</div>
 </body>
 </html>

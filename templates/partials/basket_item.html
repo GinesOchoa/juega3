@@ -1,12 +1,12 @@
-<form id="delete" action="/delete" method="post">
+<form id="delete" action="/carrito/eliminar" method="post">
     <br/>
-    <div>{{ item[1].attributes.name }}</div>
-    <div>{{ item[1].attributes.cost }}</div>
+    <div>{{ item[1].nombre }}</div>
+    <div>{{ item[1].precio }}</div>
     <br/>
     <input type="hidden" name="index" value="{{ item[0] }}"/>
     <div class="bin d-flex flex-row">
         <input id="button" type="button" onclick="warning('delete')" value="&#128465;" />
-        <span class="delete">Remove item from basket</span>
+        <span class="delete">Borrar producto del carrito</span>
     </div>
 </form>
 

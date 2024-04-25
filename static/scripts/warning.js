@@ -1,11 +1,11 @@
 function warning(ID) {
     if (ID == 'delete') {
-        if (confirm("Remove this item from basket?")) {
+        if (confirm("¿Borrar este producto del carrito?")) {
             document.getElementById(ID).submit();
         }
     }
     else if (ID == 'clear') {
-        if (confirm("Remove all items from basket?")) {
+        if (confirm("¿Borrar todos los productos del carrito?")) {
             document.getElementById(ID).submit();
         }
     }

@@ -1,12 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portada</title>
 </head>
 <body>
-    <h1>Bienvenido a la pagina de inicio</h1>
+    <h1>Bienvenido a la página de inicio</h1>
     
+    
+    {% for producto in lista_productos %}
+    <div>
+        <h2>{{ producto.nombre }}</h2>
+        <p>Precio: ${{ producto.precio }}</p>
+        <p>Disponible: {{ producto.disponible }}</p>
+        
+        
+        <form action="/agregar_al_carrito" method="POST">
+            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+            <input type="submit" value="Comprar">
+        </form>
+        
+        <form action="/agregar_al_carrito" method="POST">
+            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+            <input type="submit" value="Alquilar">
+        </form>
+    </div>
+    {% endfor %}
 </body>
 </html>
