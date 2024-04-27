@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, jsonify, redirect, session, url_for
+from flask import Flask, render_template, request, jsonify, redirect, session, url_for, json, flash
 from modelos.producto import Producto
 from controladores.usuarios_dao import UsuariosDAO
 from controladores.producto_dao import ProductoDAO
 from controladores.carrito_dao import CarritoDAO
 from controladores.carrito_dao import carrito
+from controladores.venta_dao import VentaDAO
+from modelos.venta import Venta
 from datetime import timedelta
-
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
@@ -14,8 +15,74 @@ productoDAO = ProductoDAO('juegos_de_compra.json')
 usuarios_dao = UsuariosDAO('usuarios.json')
 producto_dao = ProductoDAO('juegos_de_compra.json')
 carrito_dao = CarritoDAO('juegos_de_compra.json')
+ventaDAO = VentaDAO('ventas.json')
 
 app.permanent_session_lifetime = timedelta(days=1)
+
+@app.route('/venta')
+def venta():
+    return render_template('venta.html')
+
+@app.route('/ventas', methods=['GET'])
+def listar_ventas():
+    ventas = ventaDAO.cargar_ventas()
+    return jsonify(ventas)
+
+@app.route('/ventas', methods=['POST'])
+def agregar_venta():
+    data = request.json
+    venta_id = ventaDAO.generar_id_venta()
+    venta = Venta(venta_id, data['usuario'], data['productos'], data['precio_total'])
+    ventaDAO.guardar_venta(venta)
+    return jsonify({"mensaje": "Venta agregada exitosamente"})
+
+@app.route('/ventas', methods=['PUT'])
+def actualizar_venta():
+    data = request.json
+    venta_id = data['id']
+    nuevos_datos = {
+        "usuario": data['usuario'],
+        "productos": data['productos'],
+        "precio_total": data['precio_total']
+    }
+    ventaDAO.actualizar_venta(venta_id, nuevos_datos)
+    return jsonify({"mensaje": "Venta actualizada exitosamente"})
+
+@app.route('/ventas', methods=['DELETE'])
+def eliminar_venta():
+    data = request.json
+    venta_id = data['id']
+    ventaDAO.eliminar_venta(venta_id)
+    return jsonify({"mensaje": "Venta eliminada exitosamente"})
+
+@app.route('/carrito/procesar_venta', methods=['POST'])
+def procesar_venta():
+    usuario = session.get('usuario')
+    
+    if usuario:
+        compra = []
+        
+        if 'total_con_descuento' in session:
+            total = session.pop('total_con_descuento')
+            print("Total if",total)
+        else:
+            total = carrito_dao.calcular_total()
+            print("Total else",total)
+
+        carrito_dao.nueva_lista(carrito, compra)
+        carrito_dao.eliminar_todo_carrito()
+        
+        for item in carrito:
+            compra.append(item[1])
+        
+        carrito.clear()
+        venta_id = ventaDAO.generar_id_venta()
+        venta = Venta(venta_id, usuario, compra, total)
+        ventaDAO.guardar_venta(venta)
+        return render_template('recibo.html', total=total, carrito=compra, juegos_de_compra=producto_dao.listarProductos())
+    else:
+        flash('Debes iniciar sesión para realizar una compra', 'error')
+        return redirect(url_for('login'))
 
 @app.route('/carrito')
 def mostrar_pagina():
@@ -25,7 +92,6 @@ def mostrar_pagina():
 
 @app.route('/carrito/agregar', methods=['POST'])
 def agregar_producto_carrito():
-    print("Se ha enviado el formulario para agregar un producto al carrito.")
     producto = request.form['idProducto']
     carrito_dao.agregar_al_carrito(producto)
     return redirect("/carrito")
@@ -33,7 +99,6 @@ def agregar_producto_carrito():
 @app.route('/carrito/eliminar', methods=['POST'])
 def eliminar_producto_carrito():
     producto_index = request.form['index']
-    print("Índice del producto a eliminar:", producto_index)
     carrito_dao.eliminar_del_carrito(producto_index)
     return redirect("/carrito")
 
@@ -42,22 +107,14 @@ def limpiar_carrito():
     carrito_dao.eliminar_todo_carrito()
     return redirect("/carrito")
 
-@app.route('/carrito/checkout', methods=['POST'])
-def checkout():
-    total = session.get('total', 0.00)	
-    compra = []
-    carrito_dao.nueva_lista(carrito, compra)
-    carrito_dao.eliminar_todo_carrito()
-    return render_template('recibo.html', total=total, carrito=compra, juegos_de_compra=producto_dao.listarProductos())
-
 @app.route('/carrito/descuento', methods=['POST'])
 def descuento():
     mensaje = carrito_dao.mensaje_carrito()
-    total_antiguo = carrito_dao.calcular_total()
+    total_sin_descuento = carrito_dao.calcular_total()
     descuento = request.form['descuento']
-    total = carrito_dao.aplicar_descuento(total_antiguo, descuento)
-    session['total'] = total
-    return render_template('carrito.html', juegos_de_compra=producto_dao.listarProductos(), carrito=carrito, total=total, mensaje=mensaje)
+    total_con_descuento = carrito_dao.aplicar_descuento(total_sin_descuento, descuento)
+    session['total_con_descuento'] = total_con_descuento
+    return render_template('carrito.html', juegos_de_compra=producto_dao.listarProductos(), carrito=carrito, total=total_con_descuento, mensaje=mensaje)
 
 @app.route('/admin')
 def admin_panel():

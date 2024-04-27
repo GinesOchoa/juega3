@@ -19,16 +19,14 @@ class CarritoDAO:
             for obj in data:
                 if obj["idProducto"] == int(producto):
                     carrito.append((len(carrito), obj))
-                    print("Producto agregado al carrito:", obj)
-                
+                      
     def eliminar_del_carrito(self, producto_index):
         for i, obj in enumerate(carrito):
             if i == int(producto_index):
                 print("Producto eliminado del carrito:", carrito[i])
-                carrito.pop(i)  # Usar pop para eliminar el elemento en lugar de remove
-                break  # Salir del bucle después de eliminar el producto
-        print("Carrito actual después de eliminar:", carrito)       
-
+                carrito.pop(i)
+                break  
+             
     def eliminar_todo_carrito(self):
         carrito.clear()
 

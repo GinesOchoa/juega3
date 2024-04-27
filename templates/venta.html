@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+</head>
+<body>
+    <h1>Bienvenido al Panel de Administrador</h1>
+    <h2>CRUD de Ventas</h2>
+    <form id="ventaForm">
+        <!-- Campos para el CRUD de ventas -->
+        <label for="idVenta">ID Venta:</label><br>
+        <input type="number" id="idVenta" name="idVenta"><br>
+        <label for="usuario">Usuario:</label><br>
+        <input type="text" id="usuario" name="usuario"><br>
+        <label for="productos">Productos:</label><br>
+        <input type="text" id="productos" name="productos"><br>
+        <label for="precioTotal">Precio Total:</label><br>
+        <input type="number" id="precioTotal" name="precioTotal" step="0.01"><br>
+        <label for="fechaHora">Fecha y Hora:</label><br>
+        <input type="text" id="fechaHora" name="fechaHora"><br><br>
+        <!-- Botones para el CRUD de ventas -->
+        <button type="button" onclick="agregarVenta()">Agregar Venta</button>
+        <button type="button" onclick="listarVentas()">Listar Ventas</button>
+        <button type="button" onclick="actualizarVenta()">Actualizar Venta</button>
+        <button type="button" onclick="eliminarVenta()">Eliminar Venta</button>
+        <button type="button" onclick="limpiarCamposVenta()">Limpiar Campos</button>
+    </form>
+    <!-- Div para mostrar el resultado de las operaciones de ventas -->
+    <div id="resultadoVentas"></div>
+
+    <script>
+        function limpiarCamposVenta() {
+            document.getElementById('ventaForm').reset();
+            document.getElementById('resultadoVentas').innerHTML = ''; 
+        }
+        
+        function agregarVenta() {
+            var formData = {
+                idVenta: document.getElementById('idVenta').value,
+                usuario: document.getElementById('usuario').value,
+                productos: document.getElementById('productos').value,
+                precioTotal: document.getElementById('precioTotal').value,
+                fechaHora: document.getElementById('fechaHora').value
+            };
+
+            fetch('/ventas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensaje);
+                document.getElementById('ventaForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function listarVentas() {
+            fetch('/ventas')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultadoVentas').innerHTML = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function actualizarVenta() {
+            var formData = {
+                idVenta: document.getElementById('idVenta').value,
+                usuario: document.getElementById('usuario').value,
+                productos: document.getElementById('productos').value,
+                precioTotal: document.getElementById('precioTotal').value,
+                fechaHora: document.getElementById('fechaHora').value
+            };
+
+            fetch('/ventas/' + formData.idVenta, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensaje);
+                document.getElementById('ventaForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function eliminarVenta() {
+            var ventaId = document.getElementById('idVenta').value;
+
+            fetch('/ventas/' + ventaId, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensaje);
+                document.getElementById('ventaForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
