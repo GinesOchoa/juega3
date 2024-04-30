@@ -1,0 +1,29 @@
+[
+    {
+        "idProducto": 1,
+        "nombre": "Catan",
+        "precio_por_hora": 3.0,
+        "descripcion": "Juego de estrategia y comercio",
+        "disponible_para_alquilar": true,
+        "fecha_alquiler": null,
+        "fecha_devolucion": null
+    },
+    {
+        "idProducto": 2,
+        "nombre": "Ticket to Ride",
+        "precio_por_hora": 4.0,
+        "descripcion": "Juego de aventuras en tren por todo el mundo",
+        "disponible_para_alquilar": true,
+        "fecha_alquiler": null,
+        "fecha_devolucion": null
+    },
+    {
+        "idProducto": 3,
+        "nombre": "Codenames",
+        "precio_por_hora": 2.5,
+        "descripcion": "Juego de palabras y deducción",
+        "disponible_para_alquilar": false,
+        "fecha_alquiler": null,
+        "fecha_devolucion": null
+    }
+]

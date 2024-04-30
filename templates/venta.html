@@ -9,25 +9,23 @@
     <h1>Bienvenido al Panel de Administrador</h1>
     <h2>CRUD de Ventas</h2>
     <form id="ventaForm">
-        <!-- Campos para el CRUD de ventas -->
-        <label for="idVenta">ID Venta:</label><br>
-        <input type="number" id="idVenta" name="idVenta"><br>
+        <label for="venta_id">ID Venta:</label><br>
+        <input type="number" id="venta_id" name="venta_id"><br>
         <label for="usuario">Usuario:</label><br>
         <input type="text" id="usuario" name="usuario"><br>
         <label for="productos">Productos:</label><br>
         <input type="text" id="productos" name="productos"><br>
-        <label for="precioTotal">Precio Total:</label><br>
-        <input type="number" id="precioTotal" name="precioTotal" step="0.01"><br>
-        <label for="fechaHora">Fecha y Hora:</label><br>
-        <input type="text" id="fechaHora" name="fechaHora"><br><br>
-        <!-- Botones para el CRUD de ventas -->
+        <label for="precio_total">Precio Total:</label><br>
+        <input type="number" id="precio_total" name="precio_total" step="0.01"><br>
+        <label for="fecha_hora">Fecha y Hora:</label><br>
+        <input type="text" id="fecha_hora" name="fecha_hora"><br><br>
         <button type="button" onclick="agregarVenta()">Agregar Venta</button>
         <button type="button" onclick="listarVentas()">Listar Ventas</button>
         <button type="button" onclick="actualizarVenta()">Actualizar Venta</button>
         <button type="button" onclick="eliminarVenta()">Eliminar Venta</button>
         <button type="button" onclick="limpiarCamposVenta()">Limpiar Campos</button>
     </form>
-    <!-- Div para mostrar el resultado de las operaciones de ventas -->
+    
     <div id="resultadoVentas"></div>
 
     <script>
@@ -38,14 +36,14 @@
         
         function agregarVenta() {
             var formData = {
-                idVenta: document.getElementById('idVenta').value,
+                venta_id: document.getElementById('venta_id').value,
                 usuario: document.getElementById('usuario').value,
                 productos: document.getElementById('productos').value,
-                precioTotal: document.getElementById('precioTotal').value,
-                fechaHora: document.getElementById('fechaHora').value
+                precio_total: document.getElementById('precio_total').value,
+                fecha_hora: document.getElementById('fecha_hora').value
             };
 
-            fetch('/ventas', {
+            fetch('/venta', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -63,7 +61,7 @@
         }
 
         function listarVentas() {
-            fetch('/ventas')
+            fetch('/venta')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('resultadoVentas').innerHTML = JSON.stringify(data, null, 2);
@@ -75,14 +73,14 @@
 
         function actualizarVenta() {
             var formData = {
-                idVenta: document.getElementById('idVenta').value,
+                venta_id: document.getElementById('venta_id').value,
                 usuario: document.getElementById('usuario').value,
                 productos: document.getElementById('productos').value,
-                precioTotal: document.getElementById('precioTotal').value,
-                fechaHora: document.getElementById('fechaHora').value
+                precio_total: document.getElementById('precio_total').value,
+                fecha_hora: document.getElementById('fecha_hora').value
             };
 
-            fetch('/ventas/' + formData.idVenta, {
+            fetch('/venta' + formData.venta_id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -100,9 +98,9 @@
         }
 
         function eliminarVenta() {
-            var ventaId = document.getElementById('idVenta').value;
+            var venta_id = document.getElementById('venta_id').value;
 
-            fetch('/ventas/' + ventaId, {
+            fetch('/venta' + venta_id, {
                 method: 'DELETE'
             })
             .then(response => response.json())

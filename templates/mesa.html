@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Mesas</title>
+</head>
+<body>
+    <h1>Reserva de Mesas</h1>
+    
+    <h2>Mesas Disponibles</h2>
+    <ul>
+        {% for mesa in mesas %}
+        <li>
+            Mesa {{ mesa.id_mesa }} - {% if mesa.disponible %}Disponible{% else %}Reservada para el {{ mesa.fecha_reserva }} a las {{ mesa.hora_reserva }}{% endif %}
+            {% if mesa.disponible %}
+            <form action="/reservar_mesa" method="POST">
+                <input type="hidden" name="id_mesa" value="{{ mesa.id_mesa }}">
+                <input type="submit" value="Reservar">
+            </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

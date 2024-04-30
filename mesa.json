@@ -1,0 +1,32 @@
+[
+    {
+        "id_mesa": 1,
+        "disponible": true,
+        "fecha_reserva": null,
+        "fecha_liberacion": null
+    },
+    {
+        "id_mesa": 2,
+        "disponible": true,
+        "fecha_reserva": null,
+        "fecha_liberacion": null
+    },
+    {
+        "id_mesa": 3,
+        "disponible": false,
+        "fecha_reserva": null,
+        "fecha_liberacion": null
+    },
+    {
+        "id_mesa": 4,
+        "disponible": true,
+        "fecha_reserva": null,
+        "fecha_liberacion": null
+    },
+    {
+        "id_mesa": 5,
+        "disponible": false,
+        "fecha_reserva": null,
+        "fecha_liberacion": null
+    }
+]

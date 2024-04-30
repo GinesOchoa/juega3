@@ -4,28 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portada</title>
+    <style>
+        .slider-container {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .slider-item {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
     <h1>Bienvenido a la página de inicio</h1>
     
-    
-    {% for producto in lista_productos %}
-    <div>
-        <h2>{{ producto.nombre }}</h2>
-        <p>Precio: ${{ producto.precio }}</p>
-        <p>Disponible: {{ producto.disponible }}</p>
-        
-        
-        <form action="/agregar_al_carrito" method="POST">
-            <input type="hidden" name="producto_id" value="{{ producto.id }}">
-            <input type="submit" value="Comprar">
-        </form>
-        
-        <form action="/agregar_al_carrito" method="POST">
-            <input type="hidden" name="producto_id" value="{{ producto.id }}">
-            <input type="submit" value="Alquilar">
-        </form>
+    <h2>Juegos de Compra</h2>
+    <div class="slider-container">
+        {% for producto in lista_compra %}
+        <div class="slider-item">
+            <h3>{{ producto.nombre }}</h3>
+            <p>Precio: ${{ producto.precio }}</p>
+            <p>Disponible: {{ producto.stock }}</p>
+            <form action="/agregar_al_carrito" method="POST">
+                <input type="hidden" name="producto_id" value="{{ producto.idProducto }}">
+                <input type="submit" value="Comprar">
+            </form>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+
+    <h2>Juegos de Alquiler</h2>
+    <div class="slider-container">
+        {% for producto in lista_alquiler %}
+        <div class="slider-item">
+            <h3>{{ producto.nombre }}</h3>
+            <p>Precio por hora: ${{ producto.precio_por_hora }}</p>
+            <p>Disponible para alquilar: {{ producto.disponible_para_alquilar }}</p>
+            <form action="/alquilar_juego" method="POST">
+                <input type="hidden" name="producto_id" value="{{ producto.idProducto }}">
+                <input type="submit" value="Alquilar">
+            </form>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
