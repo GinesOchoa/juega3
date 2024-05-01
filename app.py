@@ -7,6 +7,7 @@ from controladores.carrito_dao import carrito
 from controladores.venta_dao import VentaDAO
 from controladores.mesa_dao import MesaDAO
 from modelos.venta import Venta
+from modelos.mesa import Mesa
 from datetime import timedelta
 
 app = Flask(__name__)
@@ -21,21 +22,20 @@ mesa_dao = MesaDAO('mesa.json')
 
 app.permanent_session_lifetime = timedelta(days=1)
 
-@app.route('/mesa')
-def mostrar_mesas():
-    mesas = mesa_dao.obtener_mesas()
-    return render_template('mesa.html', mesas=mesas)
+from flask import request, session, flash, redirect, url_for
 
-@app.route('/reservar_mesa', methods=['POST'])
+@app.route('/reservamesa', methods=['GET', 'POST'])
 def reservar_mesa():
-    id_mesa = int(request.form['id_mesa'])
-    mesas = mesa_dao.obtener_mesas()
-    for mesa in mesas:
-        if mesa.id_mesa == id_mesa and mesa.disponible:
-            mesa.disponible = False
-            mesa_dao.guardar_mesas(mesas)
-            break
-    return redirect('/mesa')
+    if request.method == 'POST':
+        mesa_id = int(request.form['mesa'])
+        if mesa_dao.reservar_mesa(mesa_id):
+            flash("Mesa reservada con éxito.", "success")
+        else:
+            flash("La mesa seleccionada está ocupada. Por favor, seleccione otra mesa.", "error")
+        return redirect(url_for('reservar_mesa'))
+    else:
+        return render_template('reservamesa.html')
+
 
 @app.route('/venta')
 def venta():
@@ -82,11 +82,9 @@ def procesar_venta():
         
         if 'total_con_descuento' in session:
             total = session.pop('total_con_descuento')
-            print("Total if",total)
         else:
             total = carrito_dao.calcular_total()
-            print("Total else",total)
-
+            
         carrito_dao.nueva_lista(carrito, compra)
         carrito_dao.eliminar_todo_carrito()
         

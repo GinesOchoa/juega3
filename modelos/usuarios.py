@@ -30,8 +30,9 @@ class Admin(Usuario):
         super().__init__(id, username, password, nombre, apellidos, email, telefono, admin=True)
 
 class Premium(Usuario):
-    def __init__(self, id, username, password, nombre, apellidos, email, telefono, gasto_mensual):
+    def __init__(self, id, username, password, nombre, apellidos, email, telefono, gasto_mensual, beneficios):
         super().__init__(id, username, password, nombre, apellidos, email, telefono)
 
         self.gasto_mensual = gasto_mensual
+        self.beneficios = beneficios
 

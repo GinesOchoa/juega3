@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reservar Mesa</title>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script>
+  $(function() {
+    // Configuración del Datepicker
+    $("#fecha_reserva").datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+    
+    $("#fecha_liberacion").datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
+    
+    // Configuración del Timepicker para la hora de reserva
+    $("#hora_reserva").timepicker({
+      timeFormat: 'HH:mm',
+      interval: 30,
+      scrollbar: true
+    });
+
+    // Configuración del Timepicker para la hora de liberación
+    $("#hora_liberacion").timepicker({
+      timeFormat: 'HH:mm',
+      interval: 30,
+      scrollbar: true
+    });
+
+    // Manejo del cambio de mesa seleccionada
+    $("#mesa").change(function() {
+      var mesaSeleccionada = $(this).val();
+      if (mesaOcupada) {
+        alert("La mesa seleccionada está ocupada. Por favor, seleccione otra mesa.");
+      }
+    });
+  });
+</script>
+</head>
+<body>
+  <h1>Reservar Mesa</h1>
+  <form method="post" action="/reservamesa">
+    <label for="mesa">Selecciona una Mesa:</label>
+    <select id="mesa" name="mesa">
+      <option value="1">Mesa 1</option>
+      <option value="2">Mesa 2</option>
+      <option value="3">Mesa 3</option>
+      <option value="4">Mesa 4</option>
+      <option value="5">Mesa 5</option>
+    </select><br><br>
+    <label for="fecha_reserva">Fecha de Reserva:</label>
+    <input type="text" id="fecha_reserva" name="fecha_reserva"><br><br>
+    <label for="fecha_liberacion">Fecha de Liberación:</label>
+    <input type="text" id="fecha_liberacion" name="fecha_liberacion"><br><br>
+    <label for="hora_reserva">Hora de Reserva:</label>
+    <input type="text" id="hora_reserva" name="hora_reserva"><br><br>
+    <label for="hora_liberacion">Hora de Liberación:</label>
+    <input type="text" id="hora_liberacion" name="hora_liberacion"><br><br>
+    <input type="submit" value="Reservar Mesa">
+  </form>
+</body>
+</html>

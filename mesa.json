@@ -1,32 +1,29 @@
 [
     {
-        "id_mesa": 1,
-        "disponible": true,
-        "fecha_reserva": null,
-        "fecha_liberacion": null
+        "id": 1,
+        "usuario": "cliente1",
+        "mesa": "2",
+        "fecha_reserva": "2024-05-01",
+        "fecha_liberacion": "2024-05-02",
+        "hora_reserva": "01:30",
+        "hora_liberacion": "02:30"
     },
     {
-        "id_mesa": 2,
-        "disponible": true,
-        "fecha_reserva": null,
-        "fecha_liberacion": null
+        "id": 2,
+        "usuario": "cliente1",
+        "mesa": "4",
+        "fecha_reserva": "2024-05-01",
+        "fecha_liberacion": "2024-05-02",
+        "hora_reserva": "01:30",
+        "hora_liberacion": "02:00"
     },
     {
-        "id_mesa": 3,
-        "disponible": false,
-        "fecha_reserva": null,
-        "fecha_liberacion": null
-    },
-    {
-        "id_mesa": 4,
-        "disponible": true,
-        "fecha_reserva": null,
-        "fecha_liberacion": null
-    },
-    {
-        "id_mesa": 5,
-        "disponible": false,
-        "fecha_reserva": null,
-        "fecha_liberacion": null
+        "id": 3,
+        "usuario": null,
+        "mesa": "4",
+        "fecha_reserva": "2024-05-02",
+        "fecha_liberacion": "2024-05-03",
+        "hora_reserva": "00:30",
+        "hora_liberacion": "02:00"
     }
 ]
