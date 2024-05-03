@@ -1,3 +1,83 @@
 [
-    
+    {
+        "id": 1,
+        "usuario": "cliente1",
+        "productos": [
+            [
+                0,
+                {
+                    "idProducto": 9,
+                    "nombre": "Picctionary",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 3
+                }
+            ],
+            [
+                1,
+                {
+                    "idProducto": 10,
+                    "nombre": "Scrabble",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 7
+                }
+            ]
+        ],
+        "precio_total": 32.0,
+        "fecha_hora": "2024-05-03 10:20:40"
+    },
+    {
+        "id": 2,
+        "usuario": "cliente1",
+        "productos": [
+            [
+                0,
+                {
+                    "idProducto": 10,
+                    "nombre": "Scrabble",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 7
+                }
+            ],
+            [
+                1,
+                {
+                    "idProducto": 5,
+                    "nombre": "Damas",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 10
+                }
+            ]
+        ],
+        "precio_total": 40.0,
+        "fecha_hora": "2024-05-03 10:22:16"
+    },
+    {
+        "id": 3,
+        "usuario": "cliente1",
+        "productos": [],
+        "precio_total": 0.0,
+        "fecha_hora": "2024-05-03 10:24:19"
+    },
+    {
+        "id": 4,
+        "usuario": "cliente1",
+        "productos": [
+            [
+                0,
+                {
+                    "idProducto": 5,
+                    "nombre": "Damas",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 10
+                }
+            ]
+        ],
+        "precio_total": 20.0,
+        "fecha_hora": "2024-05-03 10:25:25"
+    }
 ]

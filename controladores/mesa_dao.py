@@ -1,76 +1,134 @@
-from flask import request, session, render_template
+from flask import request, session, flash
 import json
+from datetime import datetime
 from modelos.mesa import Mesa
 
 class MesaDAO:
-    def __init__(self, json_file):
-        self.json_file = json_file
+    def __init__(self, mesa_file, eventos_file):
+        self.mesa_file = mesa_file
+        self.eventos_file = eventos_file
 
-    # Método para generar un nuevo ID de reserva
     def generar_id_reserva(self):
         reservas = self.cargar_reservas()
-        if not reservas:
+        if not reservas or not reservas["mesas"]:
             return 1
         else:
-            return reservas[-1]['id'] + 1
+            ultima_mesa = reservas["mesas"][-1]
+            if not ultima_mesa["reservas"]:
+                return 1
+            else:
+                max_id_reserva = max(reserva['id_reserva'] for reserva in ultima_mesa["reservas"])
+                return max_id_reserva + 1
 
-    # Método para guardar una reserva en el archivo JSON
+    def generar_id_evento(self):
+        eventos = self.cargar_eventos()
+        return max(evento['id'] for evento in eventos) + 1 if eventos else 1
+
     def guardar_reserva(self, mesa):
-        reserva_data = {
-            "id": mesa.id_reserva,
-            "usuario": mesa.usuario,
-            "mesa": mesa.id_mesa,
-            "fecha_reserva": mesa.fecha_reserva,
-            "fecha_liberacion": mesa.fecha_liberacion,
-            "hora_reserva": mesa.hora_reserva,
-            "hora_liberacion": mesa.hora_liberacion
-        }
-        reservas = self.cargar_reservas()
-        reservas.append(reserva_data)
-        with open(self.json_file, "w") as archivo:
-            json.dump(reservas, archivo, indent=4)
-
-    # Método para cargar las reservas desde el archivo JSON
-    def cargar_reservas(self):
-        try:
-            with open(self.json_file, "r") as archivo:
-                reservas = json.load(archivo)
-                return reservas
-        except FileNotFoundError:
-            return []
-
-    # Método para obtener una reserva por su ID
-    def obtener_reserva_por_id(self, reserva_id):
-        reservas = self.cargar_reservas()
-        for reserva in reservas:
-            if reserva['id'] == reserva_id:
-                return reserva
-        return None
-
-    # Método para reservar una mesa
-    def reservar_mesa(self, id_mesa):
-    
-        mesa_id = request.form.get("mesa")
+        mesa_id = mesa.id_mesa
         fecha_reserva = request.form.get("fecha_reserva")
         fecha_liberacion = request.form.get("fecha_liberacion")
         hora_reserva = request.form.get("hora_reserva")
         hora_liberacion = request.form.get("hora_liberacion")
         usuario = session.get('usuario')
         reserva_id = self.generar_id_reserva()
-    
-        # Establecer la mesa como no disponible
-        disponible = False
-    
-     # Crear la instancia de Mesa con todos los argumentos requeridos
-        mesa = Mesa(mesa_id, reserva_id, usuario, disponible, fecha_reserva, fecha_liberacion, hora_reserva, hora_liberacion)
-    
-        # Guardar la reserva
-        self.guardar_reserva(mesa) 
-        
-    
-    # Método para obtener todas las mesas desde el archivo JSON
-    def obtener_mesas(self):
-        with open(self.json_file, 'r') as file:
-            return json.load(file)
+        fecha_inicio = datetime.strptime(fecha_reserva + ' ' + hora_reserva, '%Y-%m-%d %H:%M')
+        fecha_fin = datetime.strptime(fecha_liberacion + ' ' + hora_liberacion, '%Y-%m-%d %H:%M')
 
-    
+        reservas = self.cargar_reservas()
+        for m in reservas.get("mesas", []):
+            if m["id"] == mesa_id and (not m['reservas'] or any(reserva["disponible"] for reserva in m['reservas'])):
+                # Verificar si alguna de las reservas es idéntica a la reserva que se intenta hacer
+                for reserva_existente in m["reservas"]:
+                    if (reserva_existente["fecha_reserva"] == fecha_reserva and
+                        reserva_existente["fecha_liberacion"] == fecha_liberacion and
+                        reserva_existente["hora_reserva"] == hora_reserva and
+                        reserva_existente["hora_liberacion"] == hora_liberacion):
+                        print("La reserva ya existe para esta mesa.")
+                        return
+                # Si no hay reserva idéntica, agregar la nueva reserva
+                reserva_data = {
+                    "disponible": True,
+                    "id_reserva": reserva_id,
+                    "fecha_reserva": fecha_reserva,
+                    "hora_reserva": hora_reserva,
+                    "fecha_liberacion": fecha_liberacion,
+                    "hora_liberacion": hora_liberacion,
+                    "usuario": usuario
+                }
+                m["reservas"].append(reserva_data)
+                self.guardar_en_archivo('mesa.json', reservas)
+                self.actualizar_disponibilidad_mesas()
+                flash('Reserva realizada con éxito', 'success')
+
+                evento_id = self.generar_id_evento()
+                evento_reserva = {
+                    "id": evento_id,
+                    "titulo": "Reserva",
+                    "descripcion": f"Reserva de mesa {mesa_id} por {usuario}",
+                    "fecha_reserva": fecha_reserva,
+                    "hora_inicio": hora_reserva,
+                    "fecha_liberacion": fecha_liberacion,
+                    "hora_fin": hora_liberacion,
+                    "color": "green" if mesa.disponible else "red"
+                }
+                eventos = self.cargar_eventos()
+                eventos.append(evento_reserva)
+                self.guardar_en_archivo('eventos.json', eventos)
+                break
+        else:
+            print("La mesa no está disponible en este momento.")
+
+    def cargar_desde_archivo(self, nombre_archivo):
+        try:
+            with open(nombre_archivo, "r") as archivo:
+                return json.load(archivo)
+        except FileNotFoundError:
+            return []
+
+    def guardar_en_archivo(self, nombre_archivo, datos):
+        with open(nombre_archivo, "w") as archivo:
+            json.dump(datos, archivo, indent=4)
+
+    def actualizar_disponibilidad_mesas(self):
+        reservas = self.cargar_reservas()
+        mesas = reservas.get('mesas', [])
+
+        for mesa in mesas:
+            for reserva in mesa['reservas']:
+                fecha_inicio_reserva = datetime.strptime(reserva['fecha_reserva'] + ' ' + reserva['hora_reserva'], '%Y-%m-%d %H:%M')
+                fecha_fin_reserva = datetime.strptime(reserva['fecha_liberacion'] + ' ' + reserva['hora_liberacion'], '%Y-%m-%d %H:%M')
+
+                for otra_reserva in mesa['reservas']:
+                    if reserva == otra_reserva:
+                        continue
+
+                    otra_fecha_inicio_reserva = datetime.strptime(otra_reserva['fecha_reserva'] + ' ' + otra_reserva['hora_reserva'], '%Y-%m-%d %H:%M')
+                    otra_fecha_fin_reserva = datetime.strptime(otra_reserva['fecha_liberacion'] + ' ' + otra_reserva['hora_liberacion'], '%Y-%m-%d %H:%M')
+
+                    if (fecha_inicio_reserva <= otra_fecha_fin_reserva and otra_fecha_inicio_reserva <= fecha_fin_reserva):
+                        break
+
+        self.guardar_en_archivo('mesa.json', reservas)
+
+    def cargar_reservas(self):
+        return self.cargar_desde_archivo('mesa.json')
+
+    def cargar_eventos(self):
+        return self.cargar_desde_archivo('eventos.json')
+
+    def obtener_mesas(self):
+        return self.cargar_reservas()
+
+    def guardar_mesas(self, mesas):
+        self.guardar_en_archivo("mesa.json", mesas)
+
+    def guardar_eventos(self, eventos):
+        self.guardar_en_archivo("eventos.json", eventos)
+
+    def obtener_mesa_por_id(self, mesa_id):
+        mesas = self.obtener_mesas()["mesas"]
+        for mesa in mesas:
+            if mesa["id"] == mesa_id:
+                return Mesa(mesa["id"], [], False, None, None, None, None, None) 
+        return None
