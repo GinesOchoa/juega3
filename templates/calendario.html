@@ -36,13 +36,23 @@
             var eventosCalendario = [];
 
             eventos.forEach(function(evento) {
-                eventosCalendario.push({
-                    title: evento.titulo,
-                    start: evento.fecha + 'T' + evento.hora_inicio,
-                    end: evento.fecha + 'T' + evento.hora_fin,
-                    description: evento.descripcion,
-                    color: evento.color
-                });
+                if (evento.fecha_reserva) {
+                    eventosCalendario.push({
+                        title: evento.titulo,
+                        start: evento.fecha_reserva + 'T' + evento.hora_inicio,
+                        end: evento.fecha_liberacion + 'T' + evento.hora_fin,
+                        description: evento.descripcion,
+                        color: evento.color
+                    });
+                } else {
+                    eventosCalendario.push({
+                        title: evento.titulo,
+                        start: evento.fecha + 'T' + evento.hora_inicio,
+                        end: evento.fecha + 'T' + evento.hora_fin,
+                        description: evento.descripcion,
+                        color: evento.color
+                    });
+                }
             });
 
             var calendarEl = document.getElementById('calendar');

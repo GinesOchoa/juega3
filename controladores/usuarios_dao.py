@@ -1,4 +1,5 @@
 import json
+import re
 
 class UsuariosDAO:
     def __init__(self, json_file):
@@ -56,3 +57,27 @@ class UsuariosDAO:
                     file.truncate()
                     return True
         return False
+
+        # Función para validar la contraseña
+    def validar_contrasena(password):
+        # Al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial
+        patron = r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{:;\'?/>.<,])(?=.*[^\s]).{8,}'
+        return re.match(patron, password)
+
+    # Función para validar el correo electrónico
+    def validar_correo(email):
+        # Utilizamos una expresión regular para verificar el formato del correo electrónico
+        patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(patron, email)
+
+    # Función para validar el formato del teléfono
+    def validar_telefono(telefono):
+        # Utilizamos una expresión regular para verificar el formato del teléfono
+        patron = r'^[0-9]{9}$'
+        return re.match(patron, telefono)
+
+    # Función para validar el formato del código postal
+    def validar_codigo_postal(codigo_postal):
+        # Utilizamos una expresión regular para verificar el formato del código postal
+        patron = r'^[0-9]{5}$'
+        return re.match(patron, codigo_postal)

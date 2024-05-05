@@ -1,0 +1,32 @@
+[
+    {
+        "id_juego": 1,
+        "fecha_alquiler": "2024-05-07",
+        "hora_alquiler": "18:00",
+        "fecha_devolucion": "2024-05-08",
+        "hora_devolucion": "21:00",
+        "precio_total": 81.0,
+        "usuario": "cliente1",
+        "disponible_para_alquilar": false
+    },
+    {
+        "id_juego": 1,
+        "fecha_alquiler": "2024-05-07",
+        "hora_alquiler": "18:00",
+        "fecha_devolucion": "2024-05-08",
+        "hora_devolucion": "21:00",
+        "precio_total": 81.0,
+        "usuario": "cliente1",
+        "disponible_para_alquilar": false
+    },
+    {
+        "id_juego": 1,
+        "fecha_alquiler": "2024-05-07",
+        "hora_alquiler": "18:00",
+        "fecha_devolucion": "2024-05-08",
+        "hora_devolucion": "21:00",
+        "precio_total": 81.0,
+        "usuario": "cliente1",
+        "disponible_para_alquilar": false
+    }
+]

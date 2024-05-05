@@ -6,7 +6,9 @@
         "descripcion": "Juego de estrategia y comercio",
         "disponible_para_alquilar": true,
         "fecha_alquiler": null,
-        "fecha_devolucion": null
+        "fecha_devolucion": null,
+        "hora_alquiler": null,
+        "hora_devolucion": null
     },
     {
         "idProducto": 2,
@@ -15,15 +17,19 @@
         "descripcion": "Juego de aventuras en tren por todo el mundo",
         "disponible_para_alquilar": true,
         "fecha_alquiler": null,
-        "fecha_devolucion": null
+        "fecha_devolucion": null,
+        "hora_alquiler": null,
+        "hora_devolucion": null
     },
     {
         "idProducto": 3,
         "nombre": "Codenames",
         "precio_por_hora": 2.5,
-        "descripcion": "Juego de palabras y deducción",
-        "disponible_para_alquilar": false,
+        "descripcion": "Juego de palabras y deducci\u00c3\u00b3n",
+        "disponible_para_alquilar": true,
         "fecha_alquiler": null,
-        "fecha_devolucion": null
+        "fecha_devolucion": null,
+        "hora_alquiler": null,
+        "hora_devolucion": null
     }
 ]

@@ -17,3 +17,6 @@ class JuegoAlquiler(Producto):
         self.disponible_para_alquilar = disponible_para_alquilar
         self.fecha_alquiler = None
         self.fecha_devolucion = None
+        self.hora_alquiler = None
+        self.hora_devolucion = None
+

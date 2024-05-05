@@ -7,8 +7,8 @@ from controladores.carrito_dao import carrito
 from controladores.venta_dao import VentaDAO
 from controladores.mesa_dao import MesaDAO
 from modelos.venta import Venta
-from modelos.mesa import Mesa
 from datetime import timedelta
+from modelos.usuarios import ClienteFisico, ClienteOnline
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
@@ -21,6 +21,113 @@ producto_dao_alquiler = ProductoDAO('juegos_de_alquiler.json')
 mesa_dao = MesaDAO("mesa.json", "eventos.json")
 
 app.permanent_session_lifetime = timedelta(days=1)
+
+@app.route('/alquiler', methods=['GET'])
+def mostrar_formulario_alquiler():
+    juegos_disponibles = producto_dao_alquiler.listar_juegos()
+    return render_template('formulario_alquiler.html', juegos_disponibles=juegos_disponibles)
+
+@app.route('/alquilar_juego', methods=['POST'])
+def alquilar_juego():
+    usuario = session.get('usuario')
+    if usuario:
+        id_juego = int(request.form['juego'])
+        fecha_alquiler = request.form['fecha_alquiler']
+        hora_alquiler = request.form['hora_alquiler']
+        fecha_devolucion = request.form['fecha_devolucion']
+        hora_devolucion = request.form['hora_devolucion']
+        
+        juego = producto_dao_alquiler.obtener_juego_por_id(id_juego)
+        
+        if not juego:
+            flash('El juego seleccionado no existe.', 'error')
+            return redirect(url_for('mostrar_formulario_alquiler'))
+    
+        if not juego.disponible_para_alquilar:
+            flash('El juego seleccionado no está disponible para alquilar.', 'error')
+            return redirect(url_for('mostrar_formulario_alquiler'))
+
+        precio_por_hora = juego.precio_por_hora
+        precio_total = producto_dao_alquiler.calcular_precio_total(precio_por_hora, fecha_alquiler, hora_alquiler, fecha_devolucion, hora_devolucion)
+        
+        recibo = {
+            'id_juego': id_juego,
+            'fecha_alquiler': fecha_alquiler,
+            'hora_alquiler': hora_alquiler,
+            'fecha_devolucion': fecha_devolucion,
+            'hora_devolucion': hora_devolucion,
+            'precio_total': precio_total,
+            'usuario': usuario
+        }
+
+        producto_dao_alquiler.guardar_recibo_alquiler(recibo)
+        producto_dao_alquiler.actualizar_disponibilidad_juegos()
+
+        flash(f'Juego alquilado por {precio_total} euros.', 'success')
+        return redirect(url_for('mostrar_formulario_alquiler'))
+    else:
+        flash('Debes iniciar sesión para realizar una compra', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+        email = request.form['email']
+        telefono = request.form['telefono']
+        tipo = request.form['tipo']
+        direccion_envio = request.form.get('direccion_envio', '')
+        provincia = request.form.get('provincia', '')
+        localidad = request.form.get('localidad', '')
+        nacionalidad = request.form.get('nacionalidad', '')
+        codigo_postal = request.form.get('codigo_postal', '')
+
+        # Validar contraseñas
+        if not usuarios_dao.validar_contrasena(password):
+            flash('La contraseña no cumple con los requisitos mínimos.', 'error')
+            return redirect(url_for('registro'))
+        
+        if password != confirm_password:
+            flash('Las contraseñas no coinciden.', 'error')
+            return redirect(url_for('registro'))
+
+        # Validar correo electrónico
+        if not usuarios_dao.validar_correo(email):
+            flash('El correo electrónico no es válido.', 'error')
+            return redirect(url_for('registro'))
+
+        # Validar formato del teléfono
+        if not usuarios_dao.validar_telefono(telefono):
+            flash('El formato del teléfono no es válido.', 'error')
+            return redirect(url_for('registro'))
+
+        # Validar formato del código postal
+        if tipo == 'Online' and not usuarios_dao.validar_codigo_postal(codigo_postal):
+            flash('El formato del código postal no es válido.', 'error')
+            return redirect(url_for('registro'))
+
+        # Verificar si el nombre de usuario ya está en uso
+        if usuarios_dao.obtener_usuario_por_username(username):
+            flash('El nombre de usuario ya está en uso.', 'error')
+            return redirect(url_for('registro'))
+
+        # Crear usuario y agregarlo a la base de datos
+        if tipo == 'Fisico':
+            nuevo_usuario = ClienteFisico(None, username, password, nombre, apellidos, email, telefono)
+        else:
+            nuevo_usuario = ClienteOnline(None, username, password, nombre, apellidos, email, telefono,
+                                           direccion_envio, provincia, localidad, nacionalidad, codigo_postal)
+
+        usuarios_dao.agregar_usuario(nuevo_usuario)
+        flash('Usuario registrado correctamente.', 'success')
+        return redirect(url_for('login'))
+    else:
+        return render_template('registro.html')
+
 #usuario
 @app.route('/calendario')
 def calendario():

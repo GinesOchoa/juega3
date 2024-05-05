@@ -12,13 +12,9 @@ class MesaDAO:
         reservas = self.cargar_reservas()
         if not reservas or not reservas["mesas"]:
             return 1
-        else:
-            ultima_mesa = reservas["mesas"][-1]
-            if not ultima_mesa["reservas"]:
-                return 1
-            else:
-                max_id_reserva = max(reserva['id_reserva'] for reserva in ultima_mesa["reservas"])
-                return max_id_reserva + 1
+    
+        max_id_reserva = max(reserva['id_reserva'] for mesa in reservas["mesas"] for reserva in mesa.get("reservas", []))
+        return max_id_reserva + 1
 
     def generar_id_evento(self):
         eventos = self.cargar_eventos()
@@ -38,7 +34,7 @@ class MesaDAO:
         reservas = self.cargar_reservas()
         for m in reservas.get("mesas", []):
             if m["id"] == mesa_id and (not m['reservas'] or any(reserva["disponible"] for reserva in m['reservas'])):
-                # Verificar si alguna de las reservas es idéntica a la reserva que se intenta hacer
+                
                 for reserva_existente in m["reservas"]:
                     if (reserva_existente["fecha_reserva"] == fecha_reserva and
                         reserva_existente["fecha_liberacion"] == fecha_liberacion and
@@ -46,7 +42,7 @@ class MesaDAO:
                         reserva_existente["hora_liberacion"] == hora_liberacion):
                         print("La reserva ya existe para esta mesa.")
                         return
-                # Si no hay reserva idéntica, agregar la nueva reserva
+                
                 reserva_data = {
                     "disponible": True,
                     "id_reserva": reserva_id,
