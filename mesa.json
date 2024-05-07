@@ -34,6 +34,15 @@
                     "fecha_liberacion": "2024-05-23",
                     "hora_liberacion": "15:00",
                     "usuario": null
+                },
+                {
+                    "disponible": true,
+                    "id_reserva": 4,
+                    "fecha_reserva": "2024-05-08",
+                    "hora_reserva": "10:00",
+                    "fecha_liberacion": "2024-05-09",
+                    "hora_liberacion": "12:00",
+                    "usuario": "cliente1"
                 }
             ]
         },

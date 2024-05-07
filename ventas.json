@@ -79,5 +79,23 @@
         ],
         "precio_total": 20.0,
         "fecha_hora": "2024-05-03 10:25:25"
+    },
+    {
+        "id": 5,
+        "usuario": "Dante",
+        "productos": [
+            [
+                1,
+                {
+                    "idProducto": 10,
+                    "nombre": "Scrabble",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 7
+                }
+            ]
+        ],
+        "precio_total": 16.0,
+        "fecha_hora": "2024-05-06 11:01:15"
     }
 ]

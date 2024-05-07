@@ -70,17 +70,6 @@
             "nacionalidad": "Espa\u00c3\u00b1ola",
             "codigo_postal": "08001",
             "gasto_mensual": 2500
-        },
-        {
-            "id": null,
-            "username": "Dante",
-            "password": "clave123",
-            "nombre": "Hermenegildo",
-            "apellidos": "M\u00e1rquez Ronaldo",
-            "email": "loquesa@gmail.com",
-            "telefono": "123456789",
-            "admin": false,
-            "tipo": "Fisico"
         }
     ]
 }

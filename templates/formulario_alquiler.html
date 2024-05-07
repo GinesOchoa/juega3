@@ -26,14 +26,6 @@ $(function() {
     beforeShowDay: deshabilitarDomingosLunes,
   });
   
-  $("#hora_alquiler, #hora_devolucion").timepicker({
-    timeFormat: 'HH:mm',
-    interval: 60, 
-    scrollbar: true,
-    minTime: '10:00am',
-    maxTime: '21:00pm', 
-  });
-
 });
 </script>
 
@@ -46,23 +38,46 @@ $(function() {
 
 </head>
 <body>
-<h1>Alquilar Juego</h1>
-<form method="post" action="/alquilar_juego">
-  <label for="juego">Selecciona un Juego:</label>
-  <select id="juego" name="juego">
-    {% for juego in juegos_disponibles %}
-      <option value="{{ juego.idProducto }}">{{ juego.nombre }}</option>
-    {% endfor %}
-  </select><br><br>
-  <label for="fecha_alquiler">Fecha de Alquiler:</label>
-  <input type="text" id="fecha_alquiler" name="fecha_alquiler"><br><br>
-  <label for="fecha_devolucion">Fecha de Devolución:</label>
-  <input type="text" id="fecha_devolucion" name="fecha_devolucion"><br><br>
-  <label for="hora_alquiler">Hora de Alquiler:</label>
-  <input type="text" id="hora_alquiler" name="hora_alquiler"><br><br>
-  <label for="hora_devolucion">Hora de Devolución:</label>
-  <input type="text" id="hora_devolucion" name="hora_devolucion"><br><br>
-  <input type="submit" value="Alquilar Juego">
-</form>
+  <h1>Alquilar Juego</h1>
+  <form method="post" action="/alquilar_juego">
+    <label for="juego">Selecciona un Juego:</label>
+    <select id="juego" name="juego">
+      {% for juego in juegos_disponibles %}
+        <option value="{{ juego.idProducto }}">{{ juego.nombre }}</option>
+      {% endfor %}
+    </select><br><br>
+    <label for="fecha_alquiler">Fecha de Alquiler:</label>
+    <input type="text" id="fecha_alquiler" name="fecha_alquiler"><br><br>
+    <label for="fecha_devolucion">Fecha de Devolución:</label>
+    <input type="text" id="fecha_devolucion" name="fecha_devolucion"><br><br>
+    <label for="hora_alquiler">Hora de Alquiler:</label>
+    <select id="hora_alquiler" name="hora_alquiler" required>
+    <option value="10:00">10:00</option>
+    <option value="11:00">11:00</option>
+    <option value="12:00">12:00</option>
+    <option value="13:00">13:00</option>
+    <option value="14:00">14:00</option>
+    <option value="17:00">17:00</option>
+    <option value="18:00">18:00</option>
+    <option value="19:00">19:00</option>
+    <option value="20:00">20:00</option>
+    <option value="21:00">21:00</option>
+    </select>
+    <br><br>
+    <label for="hora_devolucion">Hora de Devolución:</label>
+    <select id="hora_devolucion" name="hora_devolucion" required>
+      <option value="10:00">10:00</option>
+      <option value="11:00">11:00</option>
+      <option value="12:00">12:00</option>
+      <option value="13:00">13:00</option>
+      <option value="14:00">14:00</option>
+      <option value="17:00">17:00</option>
+      <option value="18:00">18:00</option>
+      <option value="19:00">19:00</option>
+      <option value="20:00">20:00</option>
+      <option value="21:00">21:00</option>
+    </select><br><br>
+    <input type="submit" value="Reservar Mesa"><br>
+  </form>
 </body>
 </html>

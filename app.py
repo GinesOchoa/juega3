@@ -260,7 +260,7 @@ def login():
         password = request.form['password']
         usuario = usuarios_dao.obtener_usuario_por_credenciales(username, password)
         if usuario:
-            session['usuario'] = usuario['username']
+            session['usuario'] = usuario
             if usuario['admin']:
                 return redirect('/admin')
             else:
@@ -278,9 +278,53 @@ def logout():
 @app.route('/usuarios')
 def usuario_panel():
     if 'usuario' in session:
-        return render_template('usuario_panel.html')
+        usuario = session['usuario']
+        
+        nombre_usuario = session['usuario']['username']
+        
+        if usuario['premium']:
+            tipo_usuario = "Premium"
+        else:
+            tipo_usuario = "Normal"
+        
+        return render_template('usuario_panel.html', nombre_usuario=nombre_usuario,tipo_usuario=tipo_usuario)
     else:
         return redirect('/login')
+
+@app.route('/cambiar_contrasena', methods=['POST'])
+def cambiar_contrasena():
+    usuario = session.get('usuario')
+    if usuario:
+        contrasena_actual = request.form['contrasena_actual']
+        nueva_contrasena = request.form['nueva_contrasena']
+        
+        if usuario['password'] == contrasena_actual:
+            usuario['password'] = nueva_contrasena
+            session['usuario'] = usuario
+            usuarios_dao.actualizar_usuario(usuario)
+            return "Contraseña actualizada exitosamente"
+        else:
+            return "La contraseña actual ingresada no es correcta"
+    else:
+        return redirect('/login')
+
+
+@app.route('/cambiar_email', methods=['POST'])
+def cambiar_email():
+    usuario = session.get('usuario')
+    if 'usuario' in session:
+        usuario = session['usuario']
+        nuevo_email = request.form['nuevo_email']
+
+        if usuarios_dao.validar_correo(nuevo_email):
+            usuario['email'] = nuevo_email
+            usuarios_dao.actualizar_usuario(usuario)
+            return "Correo electrónico actualizado exitosamente"
+        else:
+            return "El formato del correo electrónico no es válido"
+    else:
+        return redirect('/login')
+
 #usuario
 @app.route('/')
 def display_page():

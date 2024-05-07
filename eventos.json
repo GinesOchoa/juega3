@@ -55,5 +55,15 @@
         "fecha_liberacion": "2024-05-23",
         "hora_fin": "15:00",
         "color": "red"
+    },
+    {
+        "id": 7,
+        "titulo": "Reserva",
+        "descripcion": "Reserva de mesa 2 por cliente1",
+        "fecha_reserva": "2024-05-08",
+        "hora_inicio": "10:00",
+        "fecha_liberacion": "2024-05-09",
+        "hora_fin": "12:00",
+        "color": "red"
     }
 ]

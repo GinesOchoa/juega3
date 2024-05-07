@@ -8,6 +8,24 @@
 <body>
     <h1>Bienvenido al Panel de Usuarios</h1>
     <p>Aquí puedes realizar acciones como usuario.</p>
+    
+    <form action="/cambiar_contrasena" method="POST">
+        <label for="contrasena_actual">Contraseña actual:</label>
+        <input type="password" id="contrasena_actual" name="contrasena_actual">
+        <label for="nueva_contrasena">Nueva contraseña:</label>
+        <input type="password" id="nueva_contrasena" name="nueva_contrasena">
+        <input type="submit" value="Cambiar contraseña">
+    </form>
+
+    <form action="/cambiar_email" method="POST">
+        <label for="nuevo_email">Nuevo correo electrónico:</label>
+        <input type="email" id="nuevo_email" name="nuevo_email">
+        <input type="submit" value="Cambiar correo electrónico">
+    </form>
+
+    <p>Tipo de usuario: {{ tipo_usuario }}</p>
+    <p>Nombre de usuario: {{ nombre_usuario }}</p>
+
     <button onclick="cerrarSesion()">Cerrar sesión</button>
 
     <script>

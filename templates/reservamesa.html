@@ -28,25 +28,6 @@
       beforeShowDay: deshabilitarDomingosLunes,
     });
     
-     
-     $("#hora_reserva").timepicker({
-      timeFormat: 'HH:mm',
-      interval: 60, 
-      scrollbar: true,
-      minTime: '10:00am',
-      maxTime: '21:00pm', 
-    });
-
-    //Duda Alejandra, quitar horas
-    $("#hora_liberacion").timepicker({ 
-      timeFormat: 'HH:mm',
-      interval: 60, 
-      scrollbar: true,
-      minTime: '10:00am',
-      maxTime: '21:00pm',
-    });
-
-    
     $("#mesa").change(function() {
       var mesaSeleccionada = $(this).val();
       if (mesaOcupada) {
@@ -81,10 +62,34 @@
     <label for="fecha_liberacion">Fecha de Liberación:</label>
     <input type="text" id="fecha_liberacion" name="fecha_liberacion"><br><br>
     <label for="hora_reserva">Hora de Reserva:</label>
-    <input type="text" id="hora_reserva" name="hora_reserva"><br><br>
-    <label for="hora_liberacion">Hora de Liberación:</label>
-    <input type="text" id="hora_liberacion" name="hora_liberacion"><br><br>
-    <input type="submit" value="Reservar Mesa">
+    <select id="hora_alquiler" name="hora_alquiler" required>
+      <option value="10:00">10:00</option>
+      <option value="11:00">11:00</option>
+      <option value="12:00">12:00</option>
+      <option value="13:00">13:00</option>
+      <option value="14:00">14:00</option>
+      <option value="17:00">17:00</option>
+      <option value="18:00">18:00</option>
+      <option value="19:00">19:00</option>
+      <option value="20:00">20:00</option>
+      <option value="21:00">21:00</option>
+    </select><br><br>
+    <label for="hora_devolucion">Hora de Devolución:</label>
+    <select id="hora_devolucion" name="hora_devolucion" required>
+      <option value="10:00">10:00</option>
+      <option value="11:00">11:00</option>
+      <option value="12:00">12:00</option>
+      <option value="13:00">13:00</option>
+      <option value="14:00">14:00</option>
+      <option value="17:00">17:00</option>
+      <option value="18:00">18:00</option>
+      <option value="19:00">19:00</option>
+      <option value="20:00">20:00</option>
+      <option value="21:00">21:00</option>
+    </select><br><br>
+    <input type="submit" value="Reservar Mesa"><br>
   </form>
 </body>
+
+
 </html>
