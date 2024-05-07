@@ -26,6 +26,38 @@
     <p>Tipo de usuario: {{ tipo_usuario }}</p>
     <p>Nombre de usuario: {{ nombre_usuario }}</p>
 
+    {% if ultima_compra %}
+    <h2>Última compra:</h2>
+    <p>Fecha y hora: {{ ultima_compra.fecha_hora }}</p>
+    <p>Precio total: {{ ultima_compra.precio_total }} Euros</p>
+    <p>Productos:</p>
+    <ul>
+        {% for producto in ultima_compra.productos %}
+        <li>{{ producto[1].nombre }} - Precio: {{ producto[1].precio }} Euros</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>{{ mensaje }}</p>
+    {% endif %}
+
+    {% if alquileres_activos %}
+    <h2>Alquileres activos:</h2>
+    <ul>
+        {% for alquiler in alquileres_activos %}
+        <li>Fecha de alquiler: {{ alquiler.fecha_alquiler }} - Precio total: {{ alquiler.precio_total }} Euros</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if reservas_activas %}
+    <h2>Reservas activas:</h2>
+    <ul>
+        {% for reserva in reservas_activas %}
+        <li>Fecha de reserva: {{ reserva.fecha_reserva }} - Fecha de liberación: {{ reserva.fecha_liberacion }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <button onclick="cerrarSesion()">Cerrar sesión</button>
 
     <script>

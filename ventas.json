@@ -97,5 +97,34 @@
         ],
         "precio_total": 16.0,
         "fecha_hora": "2024-05-06 11:01:15"
+    },
+    {
+        "id": 6,
+        "usuario": {
+            "admin": false,
+            "apellidos": "Gonz\u00c3\u00a1lez",
+            "email": "cliente1@example.com",
+            "id": 2,
+            "nombre": "Juan",
+            "password": "clave123",
+            "premium": false,
+            "telefono": "987654321",
+            "tipo": "Fisico",
+            "username": "cliente1"
+        },
+        "productos": [
+            [
+                1,
+                {
+                    "idProducto": 5,
+                    "nombre": "Damas",
+                    "precio": 20,
+                    "descripcion": "juego de mesa",
+                    "stock": 10
+                }
+            ]
+        ],
+        "precio_total": 16.0,
+        "fecha_hora": "2024-05-07 17:16:41"
     }
 ]

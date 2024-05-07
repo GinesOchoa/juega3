@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Registro de Usuario</h1>
-    <form action="/registro" method="POST">
+    <form action="/registro" method="POST" id="registroForm">
         <label for="username">Nombre de usuario:</label><br>
         <input type="text" id="username" name="username" required><br>
         
@@ -30,27 +30,42 @@
         <input type="tel" id="telefono" name="telefono" pattern="[0-9]{9}" title="El teléfono debe tener 9 dígitos" required><br>
         
         <label for="tipo">Tipo de Usuario:</label><br>
-        <select id="tipo" name="tipo" required>
+        <select id="tipo" name="tipo" required onchange="mostrarOcultarCampos()">
             <option value="Fisico">Cliente Físico</option>
             <option value="Online">Cliente Online</option>
         </select><br>
         
-        <label for="direccion_envio">Dirección de Envío (solo para clientes online):</label><br>
-        <input type="text" id="direccion_envio" name="direccion_envio"><br>
-        
-        <label for="provincia">Provincia (solo para clientes online):</label><br>
-        <input type="text" id="provincia" name="provincia"><br>
-        
-        <label for="localidad">Localidad (solo para clientes online):</label><br>
-        <input type="text" id="localidad" name="localidad"><br>
-        
-        <label for="nacionalidad">Nacionalidad (solo para clientes online):</label><br>
-        <input type="text" id="nacionalidad" name="nacionalidad"><br>
-        
-        <label for="codigo_postal">Código Postal (solo para clientes online, formato: 12345):</label><br>
-        <input type="text" id="codigo_postal" name="codigo_postal" pattern="[0-9]{5}" title="El código postal debe tener 5 dígitos" ><br>
+        <div id="clienteOnline" style="display: none;">
+            <label for="direccion_envio">Dirección de Envío:</label><br>
+            <input type="text" id="direccion_envio" name="direccion_envio"><br>
+            
+            <label for="provincia">Provincia:</label><br>
+            <input type="text" id="provincia" name="provincia"><br>
+            
+            <label for="localidad">Localidad:</label><br>
+            <input type="text" id="localidad" name="localidad"><br>
+            
+            <label for="nacionalidad">Nacionalidad:</label><br>
+            <input type="text" id="nacionalidad" name="nacionalidad"><br>
+            
+            <label for="codigo_postal">Código Postal (formato: 12345):</label><br>
+            <input type="text" id="codigo_postal" name="codigo_postal" pattern="[0-9]{5}" title="El código postal debe tener 5 dígitos" ><br>
+        </div>
         
         <input type="submit" value="Registrar">
     </form>
+
+    <script>
+        function mostrarOcultarCampos() {
+            var tipoUsuario = document.getElementById("tipo").value;
+            var camposClienteOnline = document.getElementById("clienteOnline");
+
+            if (tipoUsuario === "Online") {
+                camposClienteOnline.style.display = "block";
+            } else {
+                camposClienteOnline.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -10,7 +10,7 @@
                     "hora_reserva": "00:00",
                     "fecha_liberacion": "2024-05-04",
                     "hora_liberacion": "03:00",
-                    "usuario": null
+                    "usuario": "cliente1"
                 },
                 {
                     "disponible": true,
@@ -19,7 +19,7 @@
                     "hora_reserva": "10:00",
                     "fecha_liberacion": "2024-05-10",
                     "hora_liberacion": "15:00",
-                    "usuario": null
+                    "usuario": "cliente1"
                 }
             ]
         },
@@ -33,7 +33,7 @@
                     "hora_reserva": "12:00",
                     "fecha_liberacion": "2024-05-23",
                     "hora_liberacion": "15:00",
-                    "usuario": null
+                    "usuario": "cliente1"
                 },
                 {
                     "disponible": true,

@@ -7,7 +7,7 @@ from controladores.carrito_dao import carrito
 from controladores.venta_dao import VentaDAO
 from controladores.mesa_dao import MesaDAO
 from modelos.venta import Venta
-from datetime import timedelta
+from datetime import timedelta, datetime
 from modelos.usuarios import ClienteFisico, ClienteOnline
 
 app = Flask(__name__)
@@ -278,16 +278,54 @@ def logout():
 @app.route('/usuarios')
 def usuario_panel():
     if 'usuario' in session:
-        usuario = session['usuario']
+        username = session['usuario']
         
-        nombre_usuario = session['usuario']['username']
+        # Cargar los datos de las ventas desde el archivo JSON
+        with open('ventas.json', 'r') as file:
+            ventas = json.load(file)
         
-        if usuario['premium']:
-            tipo_usuario = "Premium"
+        # Encontrar la última compra del usuario actual
+        ultima_compra = None
+        for venta in ventas[::-1]:  # Iterar en reversa para encontrar la última compra
+            if venta['usuario'] == username:
+                ultima_compra = venta
+                break
+        
+        # Cargar alquileres y reservas
+        alquileres = producto_dao_alquiler.cargar_alquileres()
+        reservas = mesa_dao.cargar_reservas()
+
+        # Determinar alquileres activos
+        alquileres_activos = []
+        fecha_actual = datetime.now().date()
+        for alquiler in alquileres:
+            fecha_devolucion = datetime.strptime(alquiler['fecha_devolucion'], '%Y-%m-%d').date()
+            if fecha_actual <= fecha_devolucion:
+                alquileres_activos.append(alquiler)
+
+        # Determinar reservas activas
+        reservas_activas = []
+        for mesa in reservas['mesas']:
+            for reserva in mesa['reservas']:
+                fecha_liberacion = datetime.strptime(reserva['fecha_liberacion'], '%Y-%m-%d').date()
+                if fecha_actual <= fecha_liberacion:
+                    reservas_activas.append(reserva)
+        
+        # Si se encontró una última compra, se pasa al template
+        if ultima_compra:
+            nombre_usuario = session['usuario']['username']
+            if session['usuario']['premium']:
+                tipo_usuario = "Premium"
+            else:
+                tipo_usuario = "Normal"
+            return render_template('usuario_panel.html', 
+                                   nombre_usuario=nombre_usuario, 
+                                   tipo_usuario=tipo_usuario, 
+                                   ultima_compra=ultima_compra,
+                                   alquileres_activos=alquileres_activos,
+                                   reservas_activas=reservas_activas)
         else:
-            tipo_usuario = "Normal"
-        
-        return render_template('usuario_panel.html', nombre_usuario=nombre_usuario,tipo_usuario=tipo_usuario)
+            return render_template('usuario_panel.html', mensaje="No se encontraron compras.")
     else:
         return redirect('/login')
 

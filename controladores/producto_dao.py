@@ -119,3 +119,7 @@ class ProductoDAO:
            
             return []
 
+    def cargar_alquileres(self):
+        with open('recibo_alquiler.json', 'r') as file:
+            alquileres = json.load(file)
+        return alquileres
