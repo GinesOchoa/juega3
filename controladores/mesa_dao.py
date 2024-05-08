@@ -8,6 +8,7 @@ class MesaDAO:
         self.mesa_file = mesa_file
         self.eventos_file = eventos_file
 
+
     def generar_id_reserva(self):
         reservas = self.cargar_reservas()
         if not reservas or not reservas["mesas"]:
@@ -28,9 +29,7 @@ class MesaDAO:
         hora_liberacion = request.form.get("hora_liberacion")
         usuario = session.get('usuario')
         reserva_id = self.generar_id_reserva()
-        fecha_inicio = datetime.strptime(fecha_reserva + ' ' + hora_reserva, '%Y-%m-%d %H:%M')
-        fecha_fin = datetime.strptime(fecha_liberacion + ' ' + hora_liberacion, '%Y-%m-%d %H:%M')
-
+        
         reservas = self.cargar_reservas()
         for m in reservas.get("mesas", []):
             if m["id"] == mesa_id and (not m['reservas'] or any(reserva["disponible"] for reserva in m['reservas'])):

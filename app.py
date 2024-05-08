@@ -11,7 +11,10 @@ from datetime import timedelta, datetime
 from modelos.usuarios import ClienteFisico, ClienteOnline
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta'
+app.secret_key = '63d1d38a840935ce6d581390622f885cb61f8a1fb41818e2'
+
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 usuarios_dao = UsuariosDAO('usuarios.json')
 carrito_dao = CarritoDAO('juegos_de_compra.json')
