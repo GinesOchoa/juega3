@@ -25,52 +25,11 @@ mesa_dao = MesaDAO("mesa.json", "eventos.json")
 
 app.permanent_session_lifetime = timedelta(days=1)
 
-@app.route('/alquiler', methods=['GET'])
-def mostrar_formulario_alquiler():
-    juegos_disponibles = producto_dao_alquiler.listar_juegos()
-    return render_template('formulario_alquiler.html', juegos_disponibles=juegos_disponibles)
-
-@app.route('/alquilar_juego', methods=['POST'])
-def alquilar_juego():
-    usuario = session.get('usuario')
-    if usuario:
-        id_juego = int(request.form['juego'])
-        fecha_alquiler = request.form['fecha_alquiler']
-        hora_alquiler = request.form['hora_alquiler']
-        fecha_devolucion = request.form['fecha_devolucion']
-        hora_devolucion = request.form['hora_devolucion']
-        
-        juego = producto_dao_alquiler.obtener_juego_por_id(id_juego)
-        
-        if not juego:
-            flash('El juego seleccionado no existe.', 'error')
-            return redirect(url_for('mostrar_formulario_alquiler'))
-    
-        if not juego.disponible_para_alquilar:
-            flash('El juego seleccionado no está disponible para alquilar.', 'error')
-            return redirect(url_for('mostrar_formulario_alquiler'))
-
-        precio_por_hora = juego.precio_por_hora
-        precio_total = producto_dao_alquiler.calcular_precio_total(precio_por_hora, fecha_alquiler, hora_alquiler, fecha_devolucion, hora_devolucion)
-        
-        recibo = {
-            'id_juego': id_juego,
-            'fecha_alquiler': fecha_alquiler,
-            'hora_alquiler': hora_alquiler,
-            'fecha_devolucion': fecha_devolucion,
-            'hora_devolucion': hora_devolucion,
-            'precio_total': precio_total,
-            'usuario': usuario
-        }
-
-        producto_dao_alquiler.guardar_recibo_alquiler(recibo)
-        producto_dao_alquiler.actualizar_disponibilidad_juegos()
-
-        flash(f'Juego alquilado por {precio_total} euros.', 'success')
-        return redirect(url_for('mostrar_formulario_alquiler'))
-    else:
-        flash('Debes iniciar sesión para realizar una compra', 'error')
-        return redirect(url_for('login'))
+@app.route('/')
+def display_page():
+    lista_compra = producto_dao_compra.listar_juegos()
+    lista_alquiler = producto_dao_alquiler.listar_juegos()
+    return render_template('index.html', lista_compra=lista_compra, lista_alquiler=lista_alquiler)
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
@@ -131,131 +90,6 @@ def registro():
     else:
         return render_template('registro.html')
 
-#usuario
-@app.route('/calendario')
-def calendario():
-    with open('eventos.json') as f:
-        eventos = json.load(f)
-    return render_template('calendario.html', eventos=eventos)
-
-#usuario
-@app.route('/reservamesa', methods=['GET', 'POST'])
-def reservar_mesa():
-    if request.method == 'POST':
-        mesa_id = int(request.form['mesa'])
-        mesa = mesa_dao.obtener_mesa_por_id(mesa_id)  # Obtener la mesa con el ID
-        if mesa and mesa_dao.guardar_reserva(mesa):  # Verificar si la mesa existe y guardar la reserva
-            flash("Mesa reservada con éxito.", "success")
-        else:
-            flash("La mesa seleccionada está ocupada. Por favor, seleccione otra mesa.", "error")
-        return redirect(url_for('reservar_mesa'))
-    else:
-        return render_template('reservamesa.html')
-
-#Admin
-@app.route('/venta')
-def venta():
-    return render_template('venta.html')
-#Admin
-@app.route('/venta', methods=['GET'])
-def listar_ventas():
-    ventas = venta_dao.cargar_ventas()
-    return jsonify(ventas)
-#Admin
-@app.route('/venta', methods=['POST'])
-def agregar_venta():
-    data = request.json
-    venta_id = venta_dao.generar_id_venta()
-    venta = Venta(venta_id, data['usuario'], data['productos'], data['precio_total'])
-    venta_dao.guardar_venta(venta)
-    return jsonify({"mensaje": "Venta agregada exitosamente"})
-
-#Admin
-@app.route('/venta', methods=['PUT']) 
-def actualizar_venta():
-    data = request.json
-    venta_id = data['id']
-    nuevos_datos = {
-        "usuario": data['usuario'],
-        "productos": data['productos'],
-        "precio_total": data['precio_total']
-    }
-    venta_dao.actualizar_venta(venta_id, nuevos_datos)
-    return jsonify({"mensaje": "Venta actualizada exitosamente"})
-#Admin
-@app.route('/venta', methods=['DELETE'])
-def eliminar_venta():
-    data = request.json
-    venta_id = data['id']
-    venta_dao.eliminar_venta(venta_id)
-    return jsonify({"mensaje": "Venta eliminada exitosamente"})
-#usuario
-@app.route('/carrito/procesar_venta', methods=['POST'])
-def procesar_venta():
-    usuario = session.get('usuario')
-    
-    if usuario:
-        compra = []
-        
-        if 'total_con_descuento' in session:
-            total = session.pop('total_con_descuento')
-        else:
-            total = carrito_dao.calcular_total()
-            
-        carrito_dao.nueva_lista(carrito, compra)
-        carrito_dao.eliminar_todo_carrito()
-        
-        for item in carrito:
-            compra.append(item[1])
-        
-        carrito.clear()
-        venta_id = venta_dao.generar_id_venta()
-        venta = Venta(venta_id, usuario, compra, total)
-        venta_dao.guardar_venta(venta)
-        return render_template('recibo.html', total=total, carrito=compra, juegos_de_compra=producto_dao_compra.listar_juegos())
-    else:
-        flash('Debes iniciar sesión para realizar una compra', 'error')
-        return redirect(url_for('login'))
-#usuario
-@app.route('/carrito')
-def mostrar_pagina():
-    total = carrito_dao.calcular_total()
-    mensaje = carrito_dao.mensaje_carrito()
-    return render_template('carrito.html', juegos_de_compra=producto_dao_compra.listar_juegos(), carrito=carrito, mensaje=mensaje, total=total)
-#usuario
-@app.route('/carrito/agregar', methods=['POST'])
-def agregar_producto_carrito():
-    producto = request.form['idProducto']
-    carrito_dao.agregar_al_carrito(producto)
-    return redirect("/carrito")
-#usuario
-@app.route('/carrito/eliminar', methods=['POST'])
-def eliminar_producto_carrito():
-    producto_index = request.form['index']
-    carrito_dao.eliminar_del_carrito(producto_index)
-    return redirect("/carrito")
-#usuario
-@app.route('/carrito/limpiar', methods=['POST'])
-def limpiar_carrito():
-    carrito_dao.eliminar_todo_carrito()
-    return redirect("/carrito")
-#usuario
-@app.route('/carrito/descuento', methods=['POST'])
-def descuento():
-    mensaje = carrito_dao.mensaje_carrito()
-    total_sin_descuento = carrito_dao.calcular_total()
-    descuento = request.form['descuento']
-    total_con_descuento = carrito_dao.aplicar_descuento(total_sin_descuento, descuento)
-    session['total_con_descuento'] = total_con_descuento
-    return render_template('carrito.html', juegos_de_compra=producto_dao_compra.listar_juegos(), carrito=carrito, total=total_con_descuento, mensaje=mensaje)
-#Admin
-@app.route('/admin')
-def admin_panel():
-    if 'usuario' in session and session['usuario'] == 'admin':
-        return render_template('admin_panel.html')
-    else:
-        return redirect('/login')
-#usuario
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -272,12 +106,12 @@ def login():
             return render_template('login.html', error="Credenciales incorrectas. Inténtalo de nuevo.")
 
     return render_template('login.html')
-#usuario
+
 @app.route('/logout')
 def logout():
     session.pop('usuario', None)  
     return jsonify({"mensaje": "Sesión cerrada exitosamente"})  
-#usuario
+
 @app.route('/usuarios')
 def usuario_panel():
     if 'usuario' in session:
@@ -349,7 +183,6 @@ def cambiar_contrasena():
     else:
         return redirect('/login')
 
-
 @app.route('/cambiar_email', methods=['POST'])
 def cambiar_email():
     usuario = session.get('usuario')
@@ -366,12 +199,173 @@ def cambiar_email():
     else:
         return redirect('/login')
 
-#usuario
-@app.route('/')
-def display_page():
-    lista_compra = producto_dao_compra.listar_juegos()
-    lista_alquiler = producto_dao_alquiler.listar_juegos()
-    return render_template('index.html', lista_compra=lista_compra, lista_alquiler=lista_alquiler)
+@app.route('/calendario')
+def calendario():
+    with open('eventos.json') as f:
+        eventos = json.load(f)
+    return render_template('calendario.html', eventos=eventos)
+
+@app.route('/carrito/procesar_venta', methods=['POST'])
+def procesar_venta():
+    usuario = session.get('usuario')
+    
+    if usuario:
+        compra = []
+        
+        if 'total_con_descuento' in session:
+            total = session.pop('total_con_descuento')
+        else:
+            total = carrito_dao.calcular_total()
+            
+        carrito_dao.nueva_lista(carrito, compra)
+        carrito_dao.eliminar_todo_carrito()
+        
+        for item in carrito:
+            compra.append(item[1])
+        
+        carrito.clear()
+        venta_id = venta_dao.generar_id_venta()
+        venta = Venta(venta_id, usuario, compra, total)
+        venta_dao.guardar_venta(venta)
+        return render_template('recibo.html', total=total, carrito=compra, juegos_de_compra=producto_dao_compra.listar_juegos())
+    else:
+        flash('Debes iniciar sesión para realizar una compra', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/carrito')
+def mostrar_pagina():
+    total = carrito_dao.calcular_total()
+    mensaje = carrito_dao.mensaje_carrito()
+    return render_template('carrito.html', juegos_de_compra=producto_dao_compra.listar_juegos(), carrito=carrito, mensaje=mensaje, total=total)
+
+@app.route('/carrito/agregar', methods=['POST'])
+def agregar_producto_carrito():
+    producto = request.form['idProducto']
+    carrito_dao.agregar_al_carrito(producto)
+    return redirect("/carrito")
+
+@app.route('/carrito/eliminar', methods=['POST'])
+def eliminar_producto_carrito():
+    producto_index = request.form['index']
+    carrito_dao.eliminar_del_carrito(producto_index)
+    return redirect("/carrito")
+
+@app.route('/carrito/limpiar', methods=['POST'])
+def limpiar_carrito():
+    carrito_dao.eliminar_todo_carrito()
+    return redirect("/carrito")
+
+@app.route('/carrito/descuento', methods=['POST'])
+def descuento():
+    mensaje = carrito_dao.mensaje_carrito()
+    total_sin_descuento = carrito_dao.calcular_total()
+    descuento = request.form['descuento']
+    total_con_descuento = carrito_dao.aplicar_descuento(total_sin_descuento, descuento)
+    session['total_con_descuento'] = total_con_descuento
+    return render_template('carrito.html', juegos_de_compra=producto_dao_compra.listar_juegos(), carrito=carrito, total=total_con_descuento, mensaje=mensaje)
+
+@app.route('/alquiler', methods=['GET'])
+def mostrar_formulario_alquiler():
+    juegos_disponibles = producto_dao_alquiler.listar_juegos()
+    return render_template('formulario_alquiler.html', juegos_disponibles=juegos_disponibles)
+
+@app.route('/alquilar_juego', methods=['POST'])
+def alquilar_juego():
+    usuario = session.get('usuario')
+    if usuario:
+        id_juego = int(request.form['juego'])
+        fecha_alquiler = request.form['fecha_alquiler']
+        hora_alquiler = request.form['hora_alquiler']
+        fecha_devolucion = request.form['fecha_devolucion']
+        hora_devolucion = request.form['hora_devolucion']
+        
+        juego = producto_dao_alquiler.obtener_juego_por_id(id_juego)
+        
+        if not juego:
+            flash('El juego seleccionado no existe.', 'error')
+            return redirect(url_for('mostrar_formulario_alquiler'))
+    
+        if not juego.disponible_para_alquilar:
+            flash('El juego seleccionado no está disponible para alquilar.', 'error')
+            return redirect(url_for('mostrar_formulario_alquiler'))
+
+        precio_por_hora = juego.precio_por_hora
+        precio_total = producto_dao_alquiler.calcular_precio_total(precio_por_hora, fecha_alquiler, hora_alquiler, fecha_devolucion, hora_devolucion)
+        
+        recibo = {
+            'id_juego': id_juego,
+            'fecha_alquiler': fecha_alquiler,
+            'hora_alquiler': hora_alquiler,
+            'fecha_devolucion': fecha_devolucion,
+            'hora_devolucion': hora_devolucion,
+            'precio_total': precio_total,
+            'usuario': usuario
+        }
+
+        producto_dao_alquiler.guardar_recibo_alquiler(recibo)
+        producto_dao_alquiler.actualizar_disponibilidad_juegos()
+
+        flash(f'Juego alquilado por {precio_total} euros.', 'success')
+        return redirect(url_for('mostrar_formulario_alquiler'))
+    else:
+        flash('Debes iniciar sesión para realizar una compra', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/reservamesa', methods=['GET', 'POST'])
+def reservar_mesa():
+    if request.method == 'POST':
+        mesa_id = int(request.form['mesa'])
+        mesa = mesa_dao.obtener_mesa_por_id(mesa_id)  # Obtener la mesa con el ID
+        if mesa and mesa_dao.guardar_reserva(mesa):  # Verificar si la mesa existe y guardar la reserva
+            flash("Mesa reservada con éxito.", "success")
+        else:
+            flash("La mesa seleccionada está ocupada. Por favor, seleccione otra mesa.", "error")
+        return redirect(url_for('reservar_mesa'))
+    else:
+        return render_template('reservamesa.html')
+#Admin
+@app.route('/venta')
+def venta():
+    return render_template('venta.html')
+
+@app.route('/venta', methods=['GET'])
+def listar_ventas():
+    ventas = venta_dao.cargar_ventas()
+    return jsonify(ventas)
+
+@app.route('/venta', methods=['POST'])
+def agregar_venta():
+    data = request.json
+    venta_id = venta_dao.generar_id_venta()
+    venta = Venta(venta_id, data['usuario'], data['productos'], data['precio_total'])
+    venta_dao.guardar_venta(venta)
+    return jsonify({"mensaje": "Venta agregada exitosamente"})
+
+@app.route('/venta', methods=['PUT']) 
+def actualizar_venta():
+    data = request.json
+    venta_id = data['id']
+    nuevos_datos = {
+        "usuario": data['usuario'],
+        "productos": data['productos'],
+        "precio_total": data['precio_total']
+    }
+    venta_dao.actualizar_venta(venta_id, nuevos_datos)
+    return jsonify({"mensaje": "Venta actualizada exitosamente"})
+
+@app.route('/venta', methods=['DELETE'])
+def eliminar_venta():
+    data = request.json
+    venta_id = data['id']
+    venta_dao.eliminar_venta(venta_id)
+    return jsonify({"mensaje": "Venta eliminada exitosamente"})
+#Admin
+@app.route('/admin')
+def admin_panel():
+    if 'usuario' in session and session['usuario'] == 'admin':
+        return render_template('admin_panel.html')
+    else:
+        return redirect('/login')
 #Admin
 @app.route('/productos/compra', methods=['GET'], endpoint='listar_productos_compra')
 def listar_productos_compra():
