@@ -1,21 +1,34 @@
+# Importación de los módulos y clases necesarios de Flask y otros archivos del proyecto
 from flask import Flask, render_template, request, jsonify, redirect, session, url_for, flash, json
+
+# Importación de clases específicas desde los controladores y modelos
 from controladores.producto_dao import ProductoDAO
 from controladores.usuarios_dao import UsuariosDAO
 from modelos.producto import JuegoCompra, JuegoAlquiler
 from controladores.carrito_dao import CarritoDAO
-from controladores.carrito_dao import carrito
 from controladores.venta_dao import VentaDAO
 from controladores.mesa_dao import MesaDAO
 from modelos.venta import Venta
+
+# Importación de módulos adicionales
 from datetime import timedelta, datetime
+
+# Importación de clases específicas desde los modelos de usuario
 from modelos.usuarios import ClienteFisico, ClienteOnline
 
+# Creación de una aplicación Flask
 app = Flask(__name__)
+
+# Configuración de una clave secreta para sesiones
 app.secret_key = '63d1d38a840935ce6d581390622f885cb61f8a1fb41818e2'
 
+# Configuración para recargar automáticamente las plantillas cuando se modifican
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Configuración para que los archivos estáticos se vuelvan a cargar en cada solicitud
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+# Creación de instancias de los DAOs necesarios para interactuar con la base de datos
 usuarios_dao = UsuariosDAO('usuarios.json')
 carrito_dao = CarritoDAO('juegos_de_compra.json')
 venta_dao = VentaDAO('ventas.json')
@@ -23,7 +36,9 @@ producto_dao_compra = ProductoDAO('juegos_de_compra.json')
 producto_dao_alquiler = ProductoDAO('juegos_de_alquiler.json')
 mesa_dao = MesaDAO("mesa.json", "eventos.json")
 
+# Configuración del tiempo de vida de la sesión permanente
 app.permanent_session_lifetime = timedelta(days=1)
+
 
 @app.route('/')
 def display_page():
@@ -33,7 +48,9 @@ def display_page():
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
+    # Verificar si la solicitud es POST, es decir, si se envió un formulario
     if request.method == 'POST':
+        # Obtener los datos del formulario enviado por el método POST
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -42,53 +59,54 @@ def registro():
         email = request.form['email']
         telefono = request.form['telefono']
         tipo = request.form['tipo']
-        direccion_envio = request.form.get('direccion_envio', '')
-        provincia = request.form.get('provincia', '')
-        localidad = request.form.get('localidad', '')
-        nacionalidad = request.form.get('nacionalidad', '')
-        codigo_postal = request.form.get('codigo_postal', '')
+        direccion_envio = request.form.get('direccion_envio', '')  
+        provincia = request.form.get('provincia', '')              
+        localidad = request.form.get('localidad', '')              
+        nacionalidad = request.form.get('nacionalidad', '')        
+        codigo_postal = request.form.get('codigo_postal', '')      
 
         # Validar contraseñas
         if not usuarios_dao.validar_contrasena(password):
             flash('La contraseña no cumple con los requisitos mínimos.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
         
+        # Verificar si las contraseñas coinciden
         if password != confirm_password:
             flash('Las contraseñas no coinciden.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
 
         # Validar correo electrónico
         if not usuarios_dao.validar_correo(email):
             flash('El correo electrónico no es válido.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
 
         # Validar formato del teléfono
         if not usuarios_dao.validar_telefono(telefono):
             flash('El formato del teléfono no es válido.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
 
-        # Validar formato del código postal
+        # Validar formato del código postal si el tipo es 'Online'
         if tipo == 'Online' and not usuarios_dao.validar_codigo_postal(codigo_postal):
             flash('El formato del código postal no es válido.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
 
         # Verificar si el nombre de usuario ya está en uso
         if usuarios_dao.obtener_usuario_por_username(username):
             flash('El nombre de usuario ya está en uso.', 'error')
-            return redirect(url_for('registro'))
+            return redirect(url_for('registro'))  # Redireccionar al formulario de registro nuevamente
 
-        # Crear usuario y agregarlo a la base de datos
+        # Crear un nuevo objeto de usuario según el tipo y agregarlo a la base de datos
         if tipo == 'Fisico':
             nuevo_usuario = ClienteFisico(None, username, password, nombre, apellidos, email, telefono)
         else:
             nuevo_usuario = ClienteOnline(None, username, password, nombre, apellidos, email, telefono,
                                            direccion_envio, provincia, localidad, nacionalidad, codigo_postal)
 
-        usuarios_dao.agregar_usuario(nuevo_usuario)
-        flash('Usuario registrado correctamente.', 'success')
-        return redirect(url_for('login'))
+        usuarios_dao.agregar_usuario(nuevo_usuario)  # Agregar el nuevo usuario a la base de datos
+        flash('Usuario registrado correctamente.', 'success')  # Mostrar un mensaje de éxito
+        return redirect(url_for('login'))  # Redireccionar al inicio de sesión
     else:
-        return render_template('registro.html')
+        return render_template('registro.html')  # Si la solicitud no es POST, renderizar el formulario de registro
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

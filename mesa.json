@@ -11,48 +11,13 @@
                     "fecha_liberacion": "2024-05-04",
                     "hora_liberacion": "03:00",
                     "usuario": "cliente1"
-                },
-                {
-                    "disponible": true,
-                    "id_reserva": 2,
-                    "fecha_reserva": "2024-05-08",
-                    "hora_reserva": "10:00",
-                    "fecha_liberacion": "2024-05-10",
-                    "hora_liberacion": "15:00",
-                    "usuario": "cliente1"
-                },
-                {
-                    "disponible": true,
-                    "id_reserva": 5,
-                    "fecha_reserva": "2024-05-08",
-                    "hora_reserva": null,
-                    "fecha_liberacion": "2024-05-10",
-                    "hora_liberacion": null,
-                    "usuario": null
                 }
             ]
         },
         {
             "id": 2,
             "reservas": [
-                {
-                    "disponible": true,
-                    "id_reserva": 3,
-                    "fecha_reserva": "2024-05-09",
-                    "hora_reserva": "12:00",
-                    "fecha_liberacion": "2024-05-23",
-                    "hora_liberacion": "15:00",
-                    "usuario": "cliente1"
-                },
-                {
-                    "disponible": true,
-                    "id_reserva": 4,
-                    "fecha_reserva": "2024-05-08",
-                    "hora_reserva": "10:00",
-                    "fecha_liberacion": "2024-05-09",
-                    "hora_liberacion": "12:00",
-                    "usuario": "cliente1"
-                }
+               
             ]
         },
         {
@@ -72,29 +37,13 @@
         {
             "id": 4,
             "reservas": [
-                {
-                    "disponible": true,
-                    "id_reserva": 8,
-                    "fecha_reserva": "2024-05-09",
-                    "hora_reserva": null,
-                    "fecha_liberacion": "2024-05-10",
-                    "hora_liberacion": null,
-                    "usuario": null
-                }
+               
             ]
         },
         {
             "id": 5,
             "reservas": [
-                {
-                    "disponible": true,
-                    "id_reserva": 7,
-                    "fecha_reserva": "2024-05-08",
-                    "hora_reserva": null,
-                    "fecha_liberacion": "2024-05-10",
-                    "hora_liberacion": null,
-                    "usuario": null
-                }
+               
             ]
         }
     ]

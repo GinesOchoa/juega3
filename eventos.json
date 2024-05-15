@@ -29,7 +29,7 @@
     {
         "id": 4,
         "titulo": "Reserva",
-        "descripcion": "Reserva de mesa 1 por None",
+        "descripcion": "Reserva de mesa 1 por cliente1",
         "fecha_reserva": "2024-05-03",
         "hora_inicio": "00:00",
         "fecha_liberacion": "2024-05-04",
@@ -39,20 +39,20 @@
     {
         "id": 5,
         "titulo": "Reserva",
-        "descripcion": "Reserva de mesa 1 por None",
-        "fecha_reserva": "2024-05-08",
+        "descripcion": "Reserva de mesa 1 por cliente2",
+        "fecha_reserva": "2024-05-15",
         "hora_inicio": "10:00",
-        "fecha_liberacion": "2024-05-10",
+        "fecha_liberacion": "2024-05-17",
         "hora_fin": "15:00",
         "color": "red"
     },
     {
         "id": 6,
         "titulo": "Reserva",
-        "descripcion": "Reserva de mesa 2 por None",
+        "descripcion": "Reserva de mesa 2 por cliente2",
         "fecha_reserva": "2024-05-09",
         "hora_inicio": "12:00",
-        "fecha_liberacion": "2024-05-23",
+        "fecha_liberacion": "2024-05-10",
         "hora_fin": "15:00",
         "color": "red"
     },
